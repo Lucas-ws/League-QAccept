@@ -16,6 +16,8 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;;
 
 public class QAccept {
+    private static Color ON_COLOR = new Color(127, 227, 104);
+    private static Color OFF_COLOR = new Color(224,  67, 104);
     private static boolean running = false;
     private static Screen s = new Screen();
     private static JLabel mainText;
@@ -28,12 +30,15 @@ public class QAccept {
         }
     }
 
+    /**
+     * Use sikuli to search for the accept button on the screen. If found, click it.
+     */
     private static void search() {
         try {
             Match found = s.find("/images/queue.png");
-            if(found != null){
+            if(found != null){ // found
                 bot.mouseMove(found.x + 50, found.y + 10);
-                bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+                bot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // click it!
                 bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
                 mainText.setText("Queue Accepted");
                 running = false;
@@ -42,42 +47,50 @@ public class QAccept {
         }
     }
 
+    /**
+     * setup the main GUI.
+     */
     private static void setupUI() {
         ImagePath.add(System.getProperty("user.dir"));
+
+        // frame setup
         JFrame frame = new JFrame();
         JPanel panel = new JPanel(new GridLayout(2,1));
         frame.setSize(300,200); 
         LayoutManager layout = new FlowLayout();  
         frame.setLayout(layout);
         frame.setTitle("QAccept");
+
         mainText = new JLabel("Disabled.", SwingConstants.CENTER);
+        // toggle button setup
         JToggleButton toggle = new JToggleButton("OFF");
         toggle.setPreferredSize(new Dimension(150,50));
-        toggle.setUI(new BasicToggleButtonUI());
-        toggle.setBackground(new Color(224, 67, 104));
+        toggle.setUI(new BasicToggleButtonUI()); // lets us set the background colour on event
+        toggle.setBackground(OFF_COLOR);
         toggle.setFont(new Font("Mono", Font.BOLD, 20));
         toggle.setFocusPainted(false);
+
         ItemListener itemListener = new ItemListener() {
             public void itemStateChanged(ItemEvent itemEvent)
             {
-                if (toggle.isSelected()) {
+                if (toggle.isSelected()) { // turning on
                     running = true;
                     mainText.setText("Waiting for Queue...");
-                    new Thread(new Runnable() {
+                    new Thread(new Runnable() { // we need to run this in a new thread so UI events can continue
                         public void run() {
-                            while(running){
+                            while(running){ // run until the button is clicked off
                                 search();
                             }
                         }
                     }).start();
                     toggle.setText("ON");
-                    toggle.setBackground(new Color(127, 227, 104));
+                    toggle.setBackground(ON_COLOR);
                 }
-                else {
+                else { // turning off
                     running = false;
                     mainText.setText("Disabled.");
                     toggle.setText("OFF");
-                    toggle.setBackground(new Color(224,  67, 104));
+                    toggle.setBackground(OFF_COLOR);
                 }
             }
         };
