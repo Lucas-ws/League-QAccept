@@ -14,6 +14,8 @@ import java.awt.event.ItemEvent;
 import java.awt.GridLayout;
 import java.awt.Robot;
 import java.awt.event.InputEvent;;
+import java.awt.MouseInfo;
+import java.awt.Point;
 
 public class QAccept {
     private static Color ON_COLOR = new Color(127, 227, 104);
@@ -37,9 +39,11 @@ public class QAccept {
         try {
             Match found = s.find("/images/queue.png");
             if(found != null){ // found
+                Point old = MouseInfo.getPointerInfo().getLocation();
                 bot.mouseMove(found.x + 50, found.y + 10);
                 bot.mousePress(InputEvent.BUTTON1_DOWN_MASK); // click it!
                 bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
+                bot.mouseMove((int)old.getX(), (int)old.getY());
                 mainText.setText("Queue Accepted");
                 running = false;
             }
