@@ -13,7 +13,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.GridLayout;
 import java.awt.Robot;
-import java.awt.event.InputEvent;;
+import java.awt.event.InputEvent;
 import java.awt.MouseInfo;
 import java.awt.Point;
 
